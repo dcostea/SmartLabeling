@@ -8,18 +8,20 @@ namespace SmartLabeling.Controllers
     public class MainController : ControllerBase
     {
         private readonly ILogger<MainController> _logger;
+        private readonly AppSettings _appSettings;
 
-        public MainController(ILogger<MainController> logger)
+        public MainController(ILogger<MainController> logger, AppSettings appSettings)
         {
             _logger = logger;
+            _appSettings = appSettings;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            _logger.LogInformation("GET triggered.");
+            _logger.LogInformation($"GET triggered with '{_appSettings.Entry}'.");
 
-            return Ok();
+            return Ok(_appSettings.Entry);
         }
     }
 }
