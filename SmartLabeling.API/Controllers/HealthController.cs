@@ -1,15 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace SmartLabeling.API.Controllers
 {
     [ApiController]
-
     public class HealthController : ControllerBase
     {
         private readonly HealthCheckService _healthCheckService;
