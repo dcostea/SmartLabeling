@@ -3,10 +3,13 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace SmartLabeling.API.Controllers
 {
+    [ApiController]
+
     public class HealthController : ControllerBase
     {
         private readonly HealthCheckService _healthCheckService;
@@ -22,10 +25,14 @@ namespace SmartLabeling.API.Controllers
             return Ok(new { status = "OK" });
         }
 
-        //[HttpGet("health")]
-        //public IActionResult Health()
-        //{
-        //    return Ok(new { status = "OK" });
-        //}
+        [HttpGet("health")]
+        public async Task<IActionResult> HealthAsync()
+        {
+            var report = await _healthCheckService.CheckHealthAsync();
+
+            return report.Status == HealthStatus.Healthy 
+                ? Ok(report)
+                : StatusCode((int)HttpStatusCode.ServiceUnavailable, report);
+        }
     }
 }
