@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SmartLabeling.API.HealthChecks;
+using SmartLabeling.API.Hubs;
+using System.Text.Json.Serialization;
 
 namespace SmartLabeling
 {
@@ -22,10 +22,13 @@ namespace SmartLabeling
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options =>
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<AppSettings>>().Value);
+
+            services.AddSignalR();
 
             services.AddHealthChecks().AddCheck<FakeHealthCheck>("Fake health check");
 
@@ -42,11 +45,7 @@ namespace SmartLabeling
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseHealthChecks("/api/v1/health", new HealthCheckOptions 
-            {
-                Predicate = _ => true,
-                ResponseWriter = HealthCheckResponse.WriteHealthCheckResponse
-            });
+            app.UseHealthChecks("/api/v1/health");
 
             if (env.IsDevelopment())
             {
@@ -67,6 +66,7 @@ namespace SmartLabeling
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<SensorHub>("/sensorhub");
                 endpoints.MapControllers();
             });
         }

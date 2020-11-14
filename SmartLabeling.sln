@@ -7,6 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartLabeling.API", "SmartL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartLabeling.ML", "SmartLabeling.ML\SmartLabeling.ML.csproj", "{11E11FC1-97AA-466F-AAFD-9419DD714D40}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{3E6F6DDC-132A-46ED-A86A-1CE9A47EDAD6}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\..\Users\dcost\Downloads\Smart Labeling.png = ..\..\..\..\Users\dcost\Downloads\Smart Labeling.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
