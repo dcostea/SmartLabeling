@@ -6,10 +6,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SmartLabeling.API.HealthChecks;
-using SmartLabeling.API.Hubs;
 using System.Text.Json.Serialization;
 
-namespace SmartLabeling
+namespace SmartLabeling.API
 {
     public class Startup
     {
@@ -25,17 +24,10 @@ namespace SmartLabeling
             services.AddControllers().AddJsonOptions(options =>
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
-            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
-            services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<AppSettings>>().Value);
-
-            services.AddSignalR();
+            services.Configure<ApiSettings>(Configuration.GetSection("AppSettings"));
+            services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<ApiSettings>>().Value);
 
             services.AddHealthChecks().AddCheck<FakeHealthCheck>("Fake health check");
-
-            services.AddCors(options =>
-            {
-                options.AddDefaultPolicy(builder => builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
-            });
 
             services.AddSwaggerGen(c =>
             {
@@ -54,19 +46,14 @@ namespace SmartLabeling
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SmartLabeling v1"));
             }
 
-            app.UseHttpsRedirection();
+            app.UseFileServer();
+
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            app.UseFileServer();
-
-            app.UseAuthorization();
-
-            app.UseCors();
-
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<SensorHub>("/sensorhub");
                 endpoints.MapControllers();
             });
         }

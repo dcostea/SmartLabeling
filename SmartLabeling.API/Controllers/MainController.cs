@@ -1,27 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace SmartLabeling.Controllers
+namespace SmartLabeling.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     public class MainController : ControllerBase
     {
         private readonly ILogger<MainController> _logger;
-        private readonly AppSettings _appSettings;
+        private readonly ApiSettings _apiSettings;
 
-        public MainController(ILogger<MainController> logger, AppSettings appSettings)
+        public MainController(ILogger<MainController> logger, ApiSettings apiSettings)
         {
             _logger = logger;
-            _appSettings = appSettings;
+            _apiSettings = apiSettings;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            _logger.LogInformation($"GET triggered with '{_appSettings.Entry}'.");
+            _logger.LogInformation($"GET triggered with '{_apiSettings.Entry}'.");
 
-            return Ok(_appSettings.Entry);
+            return Ok(_apiSettings.Entry);
         }
     }
 }
