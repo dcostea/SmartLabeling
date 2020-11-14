@@ -8,7 +8,7 @@ namespace SmartLabeling.Sensors.Controllers
         [HttpGet("ping")]
         public IActionResult Ping()
         {
-            return Ok(new { status = "OK" });
+            return Ok(new { status = "Sensors IoT device is OK" });
         }
     }
 }

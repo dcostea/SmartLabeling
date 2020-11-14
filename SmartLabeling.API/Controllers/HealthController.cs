@@ -18,7 +18,7 @@ namespace SmartLabeling.API.Controllers
         [HttpGet("ping")]
         public IActionResult Ping()
         {
-            return Ok(new { status = "OK" });
+            return Ok(new { status = "Main application is OK." });
         }
 
         [HttpGet("health")]
