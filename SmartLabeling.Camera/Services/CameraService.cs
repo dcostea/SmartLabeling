@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using SmartLabeling.Core.Interfaces;
+using System.Threading.Tasks;
 using Unosquare.RaspberryIO;
 
 namespace SmartLabeling.Camera.Services

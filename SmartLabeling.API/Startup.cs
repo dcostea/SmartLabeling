@@ -6,7 +6,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SmartLabeling.API.HealthChecks;
-using SmartLabeling.API.Models;
+using SmartLabeling.API.Services;
+using SmartLabeling.Core.Hubs;
+using SmartLabeling.Core.Interfaces;
+using SmartLabeling.Core.Models;
 using System.Text.Json.Serialization;
 
 namespace SmartLabeling.API
@@ -27,7 +30,11 @@ namespace SmartLabeling.API
 
             services.Configure<ApiSettings>(Configuration.GetSection("AppSettings"));
             services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<ApiSettings>>().Value);
+            services.AddSingleton<ICameraService, FakeCameraService>();
 
+            services.AddSignalR();
+
+            //TODO add health check for Camera and Sensors Iot devices
             services.AddHealthChecks().AddCheck<FakeHealthCheck>("Fake health check");
 
             services.AddSwaggerGen(c =>
@@ -53,8 +60,10 @@ namespace SmartLabeling.API
 
             app.UseRouting();
 
+            var fakeHub = Configuration.GetSection("AppSettings").GetValue<string>("FakeHub");
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<CameraHub>(fakeHub);
                 endpoints.MapControllers();
             });
         }

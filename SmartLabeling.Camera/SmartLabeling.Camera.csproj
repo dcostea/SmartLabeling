@@ -12,4 +12,12 @@
     <PackageReference Include="Unosquare.Raspberry.IO" Version="0.17.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SmartLabeling.Core\SmartLabeling.Core.csproj" />
+  </ItemGroup>
+
 </Project>

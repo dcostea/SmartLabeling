@@ -21,14 +21,14 @@ namespace SmartLabeling.API.Controllers
             return Ok(new { status = "Main application is OK." });
         }
 
-        [HttpGet("health")]
-        public async Task<IActionResult> HealthAsync()
-        {
-            var report = await _healthCheckService.CheckHealthAsync();
+        //[HttpGet("health")]
+        //public async Task<IActionResult> HealthAsync()
+        //{
+        //    var report = await _healthCheckService.CheckHealthAsync();
 
-            return report.Status == HealthStatus.Healthy 
-                ? Ok(report)
-                : StatusCode((int)HttpStatusCode.ServiceUnavailable, report);
-        }
+        //    return report.Status == HealthStatus.Healthy 
+        //        ? Ok(report)
+        //        : StatusCode((int)HttpStatusCode.ServiceUnavailable, report);
+        //}
     }
 }

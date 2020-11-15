@@ -14,9 +14,11 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SmartLabeling.Core\SmartLabeling.Core.csproj" />
     <ProjectReference Include="..\SmartLabeling.ML\SmartLabeling.ML.csproj" />
   </ItemGroup>
 

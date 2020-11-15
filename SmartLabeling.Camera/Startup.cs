@@ -5,9 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using SmartLabeling.Camera.Hubs;
-using SmartLabeling.Camera.Models;
+using SmartLabeling.Core.Hubs;
 using SmartLabeling.Camera.Services;
+using SmartLabeling.Core.Interfaces;
+using SmartLabeling.Core.Models;
 
 namespace SmartLabeling.Camera
 {

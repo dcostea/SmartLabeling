@@ -10,19 +10,19 @@
         .build();
 
     connection.on("streamingStarted", function () {
-        console.log("STREAMING STARTED");
+        console.log("CAMERA STREAMING STARTED");
 
-        connection.stream("SensorsTick").subscribe({
+        connection.stream("CameraCaptureLoop").subscribe({
             close: false,
             next: data => {
-                console.log("populating data...");
+                console.log("populating camera data...");
                 populateData(data);
             },
             err: err => {
                 console.log(err);
             },
             complete: () => {
-                console.log("finished streaming");
+                console.log("finished camera streaming");
             }
         });
     });

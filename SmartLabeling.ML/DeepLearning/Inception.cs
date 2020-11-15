@@ -1,39 +1,8 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.ML;
 
 namespace SmartLabeling.ML.DeepLearning
 {
-    //public class ImageNetDataProbability : ImageNetData
-    //{
-    //    public float Probability { get; set; }
-
-    //    public string PredictedLabel { get; set; }
-    //    public RectangleF Rectangle { get; set; }
-    //}
-
-    //////public class ImageNetPrediction
-    //////{
-    //////    public float[] Score;
-    //////    public string PredictedLabelValue;
-    //////}
-
-    //public struct InceptionSettings
-    //{
-    //    // input tensor name
-    //    public const string inputTensorName = "input";
-
-    //    // output tensor name
-    //    public const string outputTensorName = "softmax2";
-    //}
-
-    //public class ImageNetPredictions
-    //{
-    //    [ColumnName(InceptionSettings.outputTensorName)]
-    //    public float[] PredictedLabels;
-    //}
-
     public class Inception
     {
         private const string OUTPUT_LAYER = "softmax2_pre_activation";
@@ -52,35 +21,6 @@ namespace SmartLabeling.ML.DeepLearning
         {
             mlContext = new MLContext();
         }
-
-        //public static string[] ReadLabels(string labelsLocation)
-        //{
-        //    return File.ReadAllLines(labelsLocation);
-        //}
-
-        //public static (string, float) GetBestLabel(string[] labels, float[] probs)
-        //{
-        //    var max = probs.Max();
-        //    var index = probs.AsSpan().IndexOf(max);
-        //    return (labels[index], max);
-        //}
-
-        //public static (string, float) GetSecondLabel(string[] labels, float[] probs)
-        //{
-        //    var max = probs.Max();
-        //    var second = probs.Where(p => p != max).Max();
-        //    var index = probs.AsSpan().IndexOf(second);
-        //    return (labels[index], second);
-        //}
-
-        //public static (string, float) GetThirdLabel(string[] labels, float[] probs)
-        //{
-        //    var max = probs.Max();
-        //    var second = probs.Where(p => p != max).Max();
-        //    var third = probs.Where(p => p != max && p != second).Max();
-        //    var index = probs.AsSpan().IndexOf(third);
-        //    return (labels[index], third);
-        //}
 
         public static PredictionEngine<ImageNetData, ImageNetPrediction> LoadModel(string tsv, string imagesFolder, string inceptionModel, string modelLocation)
         {

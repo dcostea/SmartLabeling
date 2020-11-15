@@ -1,25 +1,36 @@
 ﻿var isInceptionTrained = false;
+var fakeUrl;
+var fakeHub;
 
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', async (event) => {
+
+    await getSettings().then((response) => response.json())
+        .then(function (data) {
+            fakeUrl = data.fakeUrl;
+            fakeHub = data.fakeHub;
+        })
+        .catch(function (err) {
+            console.log(err.message);
+        });
 
     const connection = new signalR.HubConnectionBuilder()
         .configureLogging(signalR.LogLevel.Information)
-        .withUrl("http://192.168.178.21:5050/camerahub")
+        .withUrl(fakeUrl + fakeHub)
         .build();
 
     connection.on("streamingStarted", async function () {
-        console.log("STREAMING STARTED");
-        connection.stream("SensorsTick").subscribe({
+        console.log("FAKE STREAMING STARTED");
+        connection.stream("CameraCaptureLoop").subscribe({
             close: false,
             next: data => {
-                console.log("populating data...");
+                console.log("populating fake data...");
                 populateData(data);
             },
             err: err => {
                 console.log(err);
             },
             complete: () => {
-                console.log("finished streaming");
+                console.log("finished fake streaming");
             }
         });
     });
@@ -47,6 +58,18 @@ function populateData(data) {
     }
 }
 
+async function getSettings() {
+
+    var url = "main/settings";
+
+    var result = fetch(url, {
+        method: 'GET',
+        mode: 'cors'
+    })
+
+    return result;
+}
+
 function startInceptionTraining() {
 
     var url = "main/train_inception";
@@ -58,14 +81,16 @@ function startInceptionTraining() {
         .then((response) => {
             isInceptionTrained = true;
         })
-        .catch(function () {
-            //document.querySelector("#inception_source").innerHTML("inception training failure");
+        .catch(function (err) {
+            console.log(err.message);
         });
 }
 
 function getPredictionByImage(image) {
 
     let url = 'main/predict_image';
+
+    document.querySelector("#prediction").innerHTML = "?";
 
     fetch(url, {
         method: 'POST',

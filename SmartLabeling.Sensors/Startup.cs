@@ -5,7 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using SmartLabeling.Sensors.Models;
+using SmartLabeling.Core.Hubs;
+using SmartLabeling.Core.Models;
 
 namespace SmartLabeling.Sensors
 {

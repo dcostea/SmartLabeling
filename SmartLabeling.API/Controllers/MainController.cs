@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SmartLabeling.API.Models;
+using SmartLabeling.API.Helpers;
+using SmartLabeling.Core.Models;
 using SmartLabeling.ML;
 using SmartLabeling.ML.DeepLearning;
 using System;
@@ -19,9 +20,11 @@ namespace SmartLabeling.API.Controllers
         private readonly ILogger<MainController> _logger;
         private readonly ApiSettings _settings;
 
+        //TODO pull assets path to appsettings
         static readonly string assetsRelativePath = @"../../../assets";
-        static readonly string assetsPath = GetAbsolutePath(assetsRelativePath);
+        static readonly string assetsPath = PathHelper.GetAbsolutePath(assetsRelativePath);
 
+        //TODO pull all settings to appsettings
         static readonly string tagsTsv = Path.Combine(assetsPath, "inputs", "train", "tags.tsv");
         static readonly string inceptionTrainImagesFolder = Path.Combine(assetsPath, "inputs", "train");
         static readonly string inceptionPb = Path.Combine(assetsPath, "inputs", "inception", "tensorflow_inception_graph.pb");
@@ -36,9 +39,15 @@ namespace SmartLabeling.API.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            _logger.LogInformation($"GET triggered with '{_settings.Entry}'.");
+            _logger.LogInformation($"GET triggered.");
 
-            return Ok(_settings.Entry);
+            return Ok();
+        }
+
+        [HttpGet("settings")]
+        public IActionResult GetSettings()
+        {
+            return Ok(_settings);
         }
 
         [HttpGet("train_inception")]
@@ -58,7 +67,7 @@ namespace SmartLabeling.API.Controllers
 
             byte[] imageBytes = Convert.FromBase64String(body);
 
-            string result = "???";
+            string result = "?";
 
             try
             {
@@ -66,8 +75,6 @@ namespace SmartLabeling.API.Controllers
 
                 Image image = Image.FromStream(new MemoryStream(imageBytes));
                 image.Save(testImage, ImageFormat.Jpeg);
-
-                Console.WriteLine("Predict test image");
 
                 var imageData = new ImageNetData()
                 {
@@ -89,15 +96,6 @@ namespace SmartLabeling.API.Controllers
             }
 
             return Ok(result);
-        }
-
-        private static string GetAbsolutePath(string relativePath)
-        {
-            var _dataRoot = new FileInfo(typeof(Program).Assembly.Location);
-            string assemblyFolderPath = _dataRoot.Directory.FullName;
-            string fullPath = Path.Combine(assemblyFolderPath, relativePath);
-
-            return fullPath;
         }
     }
 }

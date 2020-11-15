@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SmartLabeling.Sensors.Models;
+using SmartLabeling.Core.Models;
 
 namespace SmartLabeling.Sensors.Controllers
 {

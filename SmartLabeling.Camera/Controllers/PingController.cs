@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace SmartLabeling.Camera.Controllers
 {
