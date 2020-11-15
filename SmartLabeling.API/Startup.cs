@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SmartLabeling.API.HealthChecks;
+using SmartLabeling.API.Models;
 using System.Text.Json.Serialization;
 
 namespace SmartLabeling.API

@@ -17,7 +17,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SmartLabeling.ML\SmartLabeling.ML.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Data\labeled_sensors_data.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Data\sample_sensors_data.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\unlabeled_sensors_data.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

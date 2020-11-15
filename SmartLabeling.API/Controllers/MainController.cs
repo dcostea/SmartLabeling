@@ -1,5 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SmartLabeling.API.Models;
+using SmartLabeling.ML;
+using SmartLabeling.ML.DeepLearning;
+using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SmartLabeling.API.Controllers
 {
@@ -8,20 +17,87 @@ namespace SmartLabeling.API.Controllers
     public class MainController : ControllerBase
     {
         private readonly ILogger<MainController> _logger;
-        private readonly ApiSettings _apiSettings;
+        private readonly ApiSettings _settings;
+
+        static readonly string assetsRelativePath = @"../../../assets";
+        static readonly string assetsPath = GetAbsolutePath(assetsRelativePath);
+
+        static readonly string tagsTsv = Path.Combine(assetsPath, "inputs", "train", "tags.tsv");
+        static readonly string inceptionTrainImagesFolder = Path.Combine(assetsPath, "inputs", "train");
+        static readonly string inceptionPb = Path.Combine(assetsPath, "inputs", "inception", "tensorflow_inception_graph.pb");
+        static readonly string imageClassifierZip = Path.Combine(assetsPath, "outputs", "imageClassifier.zip");
 
         public MainController(ILogger<MainController> logger, ApiSettings apiSettings)
         {
             _logger = logger;
-            _apiSettings = apiSettings;
+            _settings = apiSettings;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            _logger.LogInformation($"GET triggered with '{_apiSettings.Entry}'.");
+            _logger.LogInformation($"GET triggered with '{_settings.Entry}'.");
 
-            return Ok(_apiSettings.Entry);
+            return Ok(_settings.Entry);
+        }
+
+        [HttpGet("train_inception")]
+        public IActionResult ReTrainInception()
+        {
+            Inception.Model = Inception.LoadAndScoreModel(tagsTsv, inceptionTrainImagesFolder, inceptionPb, imageClassifierZip);
+            Console.WriteLine("inception re-trained");
+
+            return Ok("inception re-trained");
+        }
+
+        [HttpPost("predict_image")]
+        public async Task<IActionResult> ImagePredictAsync()
+        {
+            using var reader = new StreamReader(Request.Body, Encoding.UTF8);
+            string body = await reader.ReadToEndAsync();
+
+            byte[] imageBytes = Convert.FromBase64String(body);
+
+            string result = "???";
+
+            try
+            {
+                var testImage = Path.Combine(inceptionTrainImagesFolder, "capture.jpg");
+
+                Image image = Image.FromStream(new MemoryStream(imageBytes));
+                image.Save(testImage, ImageFormat.Jpeg);
+
+                Console.WriteLine("Predict test image");
+
+                var imageData = new ImageNetData()
+                {
+                    ImagePath = testImage,
+                    Label = Path.GetFileNameWithoutExtension(testImage)
+                };
+
+                if (Inception.Model is null)
+                {
+                    Inception.Model = Inception.LoadModel(tagsTsv, inceptionTrainImagesFolder, inceptionPb, imageClassifierZip);
+                }
+
+                var prediction = Inception.Model.Predict(imageData);
+                result = prediction.PredictedLabelValue;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            return Ok(result);
+        }
+
+        private static string GetAbsolutePath(string relativePath)
+        {
+            var _dataRoot = new FileInfo(typeof(Program).Assembly.Location);
+            string assemblyFolderPath = _dataRoot.Directory.FullName;
+            string fullPath = Path.Combine(assemblyFolderPath, relativePath);
+
+            return fullPath;
         }
     }
 }

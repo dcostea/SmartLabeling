@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SmartLabeling.Camera.Models;
 
 namespace SmartLabeling.Camera.Controllers
 {

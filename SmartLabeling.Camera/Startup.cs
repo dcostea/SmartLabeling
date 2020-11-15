@@ -6,6 +6,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SmartLabeling.Camera.Hubs;
+using SmartLabeling.Camera.Models;
+using SmartLabeling.Camera.Services;
 
 namespace SmartLabeling.Camera
 {
@@ -31,11 +33,9 @@ namespace SmartLabeling.Camera
 
             services.Configure<CameraSettings>(Configuration.GetSection("CameraSettings"));
             services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<CameraSettings>>().Value);
+            services.AddSingleton<ICameraService, CameraService>();
 
-            //services.AddCors(options =>
-            //{
-            //    options.AddDefaultPolicy(builder => builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
-            //});
+            services.AddCors();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -49,7 +49,7 @@ namespace SmartLabeling.Camera
 
             app.UseHttpsRedirection();
 
-            //app.UseCors();
+            app.UseCors(builder => builder.WithOrigins("http://localhost:5000").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 
             app.UseRouting();
 
