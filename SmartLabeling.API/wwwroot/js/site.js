@@ -2,6 +2,8 @@
 var fakeUrl;
 var fakeCameraHub;
 var fakeSensorsHub;
+var predictedSource;
+var sensors = {};
 
 document.addEventListener('DOMContentLoaded', async (event) => {
 
@@ -88,14 +90,32 @@ function populateCameraData(data) {
     }
 }
 
+function populateList(sensors, predictedSource)
+{
+    if (sensors.temperature !== undefined && sensors.luminosity !== undefined && sensors.infrared !== undefined && predictedSource !== undefined)
+    {
+        document.querySelector("#readings tbody").innerHTML = `<tr><td>${sensors.temperature}</td><td>${sensors.luminosity}</td><td>${sensors.infrared}</td><td>${sensors.createdAt}</td><td>${predictedSource}</td></tr>`
+            + document.querySelector("#readings tbody").innerHTML;
+    }
+}
+
 function populateSensorsData(data) {
     if (data !== undefined) {
-        if (data.luminosity !== undefined)
+        if (data.luminosity !== undefined) {
+            sensors.luminosity = data.luminosity;
             document.querySelector("#lux").innerHTML = `${data.luminosity} %`;
-        if (data.temperature !== undefined)
+        }
+        if (data.temperature !== undefined) {
+            sensors.temperature = data.temperature;
             document.querySelector("#temp").innerHTML = `${data.temperature} &deg;C`;
-        if (data.infrared !== undefined)
+        }
+        if (data.infrared !== undefined) {
+            sensors.infrared = data.infrared;
             document.querySelector("#infra").innerHTML = `${data.infrared} %`;
+        }
+        if (data.createdAt !== undefined) {
+            sensors.createdAt = data.createdAt;
+        }
     }
 }
 
@@ -146,7 +166,11 @@ function getPredictionByImage(image) {
         .then(function (data) {
             if (data !== undefined) {
                 console.log(data);
+                predictedSource = data;
                 document.querySelector("#prediction").innerHTML = data;
             }
+
+            //TODO is the right place?
+            populateList(sensors, data);
         });
 }
