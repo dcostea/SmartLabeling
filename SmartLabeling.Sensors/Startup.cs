@@ -53,7 +53,7 @@ namespace SmartLabeling.Sensors
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<SensorHub>("/sensorhub");
+                endpoints.MapHub<SensorHub>("/sensorhub"); //TODO replace literal with appsettings
                 endpoints.MapControllers();
             });
         }

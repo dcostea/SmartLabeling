@@ -58,7 +58,7 @@ namespace SmartLabeling.Camera
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<CameraHub>("/camerahub");
+                endpoints.MapHub<CameraHub>("/camerahub"); //TODO replace literal with appsettings
                 endpoints.MapControllers();
             });
         }

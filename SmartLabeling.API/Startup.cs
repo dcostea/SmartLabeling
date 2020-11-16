@@ -60,10 +60,12 @@ namespace SmartLabeling.API
 
             app.UseRouting();
 
-            var fakeHub = Configuration.GetSection("AppSettings").GetValue<string>("FakeHub");
+            var fakeCameraHub = Configuration.GetSection("AppSettings").GetValue<string>("FakeCameraHub");
+            var fakeSensorsHub = Configuration.GetSection("AppSettings").GetValue<string>("FakeSensorsHub");
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<CameraHub>(fakeHub);
+                endpoints.MapHub<CameraHub>(fakeCameraHub);
+                endpoints.MapHub<CameraHub>(fakeSensorsHub);
                 endpoints.MapControllers();
             });
         }

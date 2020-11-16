@@ -12,7 +12,9 @@
 
         public string SensorsHub { get; set; }
 
-        public string FakeHub { get; set; }
+        public string FakeCameraHub { get; set; }
+
+        public string FakeSensorsHub { get; set; }
 
         public int ImageWidth { get; set; }
 

@@ -1,13 +1,15 @@
 ﻿var isInceptionTrained = false;
 var fakeUrl;
-var fakeHub;
+var fakeCameraHub;
+var fakeSensorsHub;
 
 document.addEventListener('DOMContentLoaded', async (event) => {
 
     await getSettings().then((response) => response.json())
         .then(function (data) {
             fakeUrl = data.fakeUrl;
-            fakeHub = data.fakeHub;
+            fakeCameraHub = data.fakeCameraHub;
+            fakeSensorsHub = data.fakeSensorsHub;
         })
         .catch(function (err) {
             console.log(err.message);
@@ -15,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
     const connection = new signalR.HubConnectionBuilder()
         .configureLogging(signalR.LogLevel.Information)
-        .withUrl(fakeUrl + fakeHub)
+        .withUrl(fakeUrl + fakeCameraHub)
         .build();
 
     connection.on("streamingStarted", async function () {
