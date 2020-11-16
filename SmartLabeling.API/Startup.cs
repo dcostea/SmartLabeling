@@ -31,6 +31,7 @@ namespace SmartLabeling.API
             services.Configure<ApiSettings>(Configuration.GetSection("AppSettings"));
             services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<ApiSettings>>().Value);
             services.AddSingleton<ICameraService, FakeCameraService>();
+            services.AddSingleton<ISensorsService, FakeSensorsService>();
 
             services.AddSignalR();
 
@@ -65,7 +66,7 @@ namespace SmartLabeling.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<CameraHub>(fakeCameraHub);
-                endpoints.MapHub<CameraHub>(fakeSensorsHub);
+                endpoints.MapHub<SensorsHub>(fakeSensorsHub);
                 endpoints.MapControllers();
             });
         }

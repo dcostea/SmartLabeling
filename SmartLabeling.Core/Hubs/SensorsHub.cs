@@ -38,7 +38,7 @@ namespace SmartLabeling.Core.Hubs
             await Clients.All.SendAsync("sensorsStreamingStopped");
         }
 
-        public ChannelReader<Reading> SensorsSensorsLoop()
+        public ChannelReader<Reading> SensorsCaptureLoop()
         {
             var channel = Channel.CreateUnbounded<Reading>();
             _ = WriteToChannel(channel.Writer);
@@ -57,15 +57,11 @@ namespace SmartLabeling.Core.Hubs
                     var infrared = await _sensorsService.ReadInfrared();
                     await Task.Delay(_settings.ReadingDelay);
 
-                    var distance = await _sensorsService.ReadDistance();
-                    await Task.Delay(_settings.ReadingDelay);
-
                     var reading = new Reading
                     {
                         Luminosity = luminosity,
                         Temperature = temperature,
                         Infrared = infrared,
-                        Distance = distance,
                         CreatedAt = DateTime.Now.ToString("yyyyMMddhhmmssff")
                     };
 

@@ -19,50 +19,6 @@ namespace SmartLabeling.Sensors.Services
             _settings = settings;
         }
 
-        public async Task<double> ReadDistance()
-        {
-            double distance;
-            Stopwatch timeWatcher = new();
-
-            var trigger = Pi.Gpio[_settings.ProximityTriggerPin];
-            trigger.PinMode = GpioPinDriveMode.Output;
-            var echo = Pi.Gpio[_settings.ProximityEchoPin];
-            echo.PinMode = GpioPinDriveMode.Input;
-            await trigger.WriteAsync(GpioPinValue.Low);
-
-            ManualResetEvent mre = new(false);
-            mre.WaitOne(500);
-            timeWatcher.Reset();
-
-            //Send pulse
-            trigger.Write(GpioPinValue.High);
-            mre.WaitOne(TimeSpan.FromMilliseconds(0.01));
-            trigger.Write(GpioPinValue.Low);
-            var t = Task.Run(() =>
-            {
-                //Receive pulse
-                while (echo.ReadValue() != GpioPinValue.High) { }
-                timeWatcher.Start();
-
-                while (echo.ReadValue() == GpioPinValue.High) { }
-                timeWatcher.Stop();
-
-                //Calculating distance
-                distance = timeWatcher.Elapsed.TotalSeconds * 17000;
-                return Math.Round(distance, 2);
-            });
-
-            bool didComplete = t.Wait(TimeSpan.FromMilliseconds(100));
-            if (didComplete)
-            {
-                return Math.Round(t.Result, 2);
-            }
-            else
-            {
-                return _settings.ProximityMaxDistance; // if no response, assumes the distance is MAX_DISTANCE             
-            }
-        }
-
         public async Task<double> ReadTemperature()
         {
             #region bits explained

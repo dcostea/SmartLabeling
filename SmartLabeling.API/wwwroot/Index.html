@@ -27,14 +27,25 @@
                 <input type="button" id="start" class="btn btn-primary btn-lg mt-3 mb-3" value="Sync streaming" />
             </div>
             <div class="col-5">
-                <h2>Inception prediction:</h2>
-                <!--<h3><span id="prediction" class="badge badge-info bg-dark"></span></h3>-->
+                <h2></h2>
+                <div class="reading">
+                    <img src="images/lux.png" width="64" />
+                    <h2><span id="lux" class="badge badge-danger bg-dark text-danger">? %</span></h2>
+                </div>
+                <div class="reading">
+                    <img src="images/temp.png" width="64" />
+                    <h2><span id="temp" class="badge badge-danger bg-dark text-danger">? &deg;C</span></h2>
+                </div>
+                <div class="reading">
+                    <img src="images/infra.png" width="64" />
+                    <h2><span id="infra" class="badge badge-danger bg-dark text-danger">? %</span></h2>
+                </div>
             </div>
             <div class="col-3 text-center">
                 <div class="card card-inverse text-center">
                     <img class="card-img-top rounded" id="camera" src="images/undefined.png" alt="">
                     <div class="card-img-overlay">
-                        <span id="prediction" class="card-text badge badge-info bg-dark"></span>
+                        <h2><span id="prediction" class="card-text badge badge-info bg-dark"></span></h2>
                     </div>
                 </div>
             </div>

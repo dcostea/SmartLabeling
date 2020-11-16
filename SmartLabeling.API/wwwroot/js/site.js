@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', async (event) => {
             console.log(err.message);
         });
 
+
+    ////////////////////// CAMERA /////////////////////////////
     const cameraConnection = new signalR.HubConnectionBuilder()
         .configureLogging(signalR.LogLevel.Information)
         .withUrl(fakeUrl + fakeCameraHub)
@@ -26,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
             close: false,
             next: data => {
                 console.log("populating fake camera data...");
-                populateData(data);
+                populateCameraData(data);
             },
             err: err => {
                 console.log(err);
@@ -39,9 +41,35 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
     cameraConnection.start();
 
+    ////////////////////// SENSORS /////////////////////////////
+    const sensorsConnection = new signalR.HubConnectionBuilder()
+        .configureLogging(signalR.LogLevel.Information)
+        .withUrl(fakeUrl + fakeSensorsHub)
+        .build();
+
+    sensorsConnection.on("sensorsStreamingStarted", async function () {
+        console.log("FAKE SENSORS STREAMING STARTED");
+        sensorsConnection.stream("SensorsCaptureLoop").subscribe({
+            close: false,
+            next: data => {
+                console.log("populating fake sensors data...");
+                populateSensorsData(data);
+            },
+            err: err => {
+                console.log(err);
+            },
+            complete: () => {
+                console.log("finished fake sensors streaming");
+            }
+        });
+    });
+
+    sensorsConnection.start();
+    ////////////////////////////////////////////////////////////
 
     document.querySelector("#start").onclick = function () {
         cameraConnection.invoke("StartCameraStreaming");
+        sensorsConnection.invoke("StartSensorsStreaming");
     }
 
     document.querySelector("#inception_train").onclick = function () {
@@ -51,12 +79,23 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     }
 })
 
-function populateData(data) {
+function populateCameraData(data) {
     if (data !== undefined) {
         if (data.image !== undefined) {
             document.querySelector("#camera").setAttribute("src", `data:image/jpg;base64,${data.image}`);
             getPredictionByImage(data.image);
         }
+    }
+}
+
+function populateSensorsData(data) {
+    if (data !== undefined) {
+        if (data.luminosity !== undefined)
+            document.querySelector("#lux").innerHTML = `${data.luminosity} %`;
+        if (data.temperature !== undefined)
+            document.querySelector("#temp").innerHTML = `${data.temperature} &deg;C`;
+        if (data.infrared !== undefined)
+            document.querySelector("#infra").innerHTML = `${data.infrared} %`;
     }
 }
 
