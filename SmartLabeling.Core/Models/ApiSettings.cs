@@ -21,5 +21,7 @@
         public int ImageHeight { get; set; }
 
         public int CaptureDelay { get; set; }
+        
+        public int ReadingDelay { get; set; }
     }
 }

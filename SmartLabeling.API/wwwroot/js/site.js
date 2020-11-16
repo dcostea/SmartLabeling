@@ -15,33 +15,33 @@ document.addEventListener('DOMContentLoaded', async (event) => {
             console.log(err.message);
         });
 
-    const connection = new signalR.HubConnectionBuilder()
+    const cameraConnection = new signalR.HubConnectionBuilder()
         .configureLogging(signalR.LogLevel.Information)
         .withUrl(fakeUrl + fakeCameraHub)
         .build();
 
-    connection.on("streamingStarted", async function () {
-        console.log("FAKE STREAMING STARTED");
-        connection.stream("CameraCaptureLoop").subscribe({
+    cameraConnection.on("cameraStreamingStarted", async function () {
+        console.log("FAKE CAMERA STREAMING STARTED");
+        cameraConnection.stream("CameraCaptureLoop").subscribe({
             close: false,
             next: data => {
-                console.log("populating fake data...");
+                console.log("populating fake camera data...");
                 populateData(data);
             },
             err: err => {
                 console.log(err);
             },
             complete: () => {
-                console.log("finished fake streaming");
+                console.log("finished fake camera streaming");
             }
         });
     });
 
-    connection.start();
+    cameraConnection.start();
 
 
     document.querySelector("#start").onclick = function () {
-        connection.invoke("StartStreaming");
+        cameraConnection.invoke("StartCameraStreaming");
     }
 
     document.querySelector("#inception_train").onclick = function () {

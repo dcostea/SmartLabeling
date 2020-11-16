@@ -2,6 +2,15 @@
 {
     public class SensorsSettings
     {
-        public string Entry { get; set; }
+        public int InfraredDistance { get; set; }
+
+        public int ProximityTriggerPin { get; set; }
+
+        public int ProximityEchoPin { get; set; }
+
+        public int ProximityMaxDistance { get; set; }
+
+        public int ProximityDistance { get; set; }
+
     }
 }

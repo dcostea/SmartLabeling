@@ -4,13 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Smart Labeling Control Panel</title>
-    
+
     <link href="lib/bootstrap-5.0.0-alpha3-dist/css/bootstrap.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/site.css" />
 
     <script src="lib/bootstrap-5.0.0-alpha3-dist/js/bootstrap.js"></script>
     <script src="lib/aspnet/signalr/dist/browser/signalr.js"></script>
     <script src="js/site.js" asp-append-version="true"></script>
+
 </head>
 <body>
     <div class="container-fluid body-content">
@@ -27,16 +28,20 @@
             </div>
             <div class="col-5">
                 <h2>Inception prediction:</h2>
-                <h3><span id="prediction" class="badge badge-info bg-dark"></span></h3>
+                <!--<h3><span id="prediction" class="badge badge-info bg-dark"></span></h3>-->
             </div>
             <div class="col-3 text-center">
-                <img src="images/undefined.png" width="224" class="rounded m-3" id="camera" alt="" />
+                <div class="card card-inverse text-center">
+                    <img class="card-img-top rounded" id="camera" src="images/undefined.png" alt="">
+                    <div class="card-img-overlay">
+                        <span id="prediction" class="card-text badge badge-info bg-dark"></span>
+                    </div>
+                </div>
             </div>
             <div class="col-4">
                 <h5>Note:</h5>
                 <h5>Prediction using deep learning (transfer learning) with image classification</h5>
             </div>
         </div>
-    </div>
 </body>
 </html>

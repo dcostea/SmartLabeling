@@ -20,9 +20,9 @@ namespace SmartLabeling.Sensors.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            _logger.LogInformation($"GET triggered with '{_settings.Entry}'.");
+            _logger.LogInformation($"GET triggered.");
 
-            return Ok(_settings.Entry);
+            return Ok();
         }
     }
 }

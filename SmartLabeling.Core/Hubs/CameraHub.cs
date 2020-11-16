@@ -23,19 +23,19 @@ namespace SmartLabeling.Core.Hubs
             _settings = settings;
         }
 
-        public async Task StartStreaming()
+        public async Task StartCameraStreaming()
         {
             //TODO replace console with logger
             Console.WriteLine("Camera streaming started.");
             _isStreaming = true;
-            await Clients.All.SendAsync("streamingStarted", "started...");
+            await Clients.All.SendAsync("cameraStreamingStarted", "started...");
         }
 
-        public async Task StopStreaming()
+        public async Task StopCameraStreaming()
         {
             Console.WriteLine("Camera streaming stopped.");
             _isStreaming = false;
-            await Clients.All.SendAsync("streamingStopped");
+            await Clients.All.SendAsync("cameraStreamingStopped");
         }
 
         public ChannelReader<Capture> CameraCaptureLoop()
