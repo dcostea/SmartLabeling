@@ -13,11 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
+    <ProjectReference Include="..\SmartLabeling.Core\SmartLabeling.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SmartLabeling.Core\SmartLabeling.Core.csproj" />
+    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

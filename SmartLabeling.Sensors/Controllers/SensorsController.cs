@@ -9,12 +9,12 @@ namespace SmartLabeling.Sensors.Controllers
     public class SensorsController : ControllerBase
     {
         private readonly ILogger<SensorsController> _logger;
-        private readonly SensorsSettings _settings;
+        private readonly ApiSettings _settings;
 
-        public SensorsController(ILogger<SensorsController> logger, SensorsSettings sensorsSettings)
+        public SensorsController(ILogger<SensorsController> logger, ApiSettings settings)
         {
             _logger = logger;
-            _settings = sensorsSettings;
+            _settings = settings;
         }
 
         [HttpGet]

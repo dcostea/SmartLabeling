@@ -7,16 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartLabeling.API", "SmartL
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartLabeling.ML", "SmartLabeling.ML\SmartLabeling.ML.csproj", "{11E11FC1-97AA-466F-AAFD-9419DD714D40}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{3E6F6DDC-132A-46ED-A86A-1CE9A47EDAD6}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\..\..\Users\dcost\Downloads\Smart Labeling.png = ..\..\..\..\Users\dcost\Downloads\Smart Labeling.png
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartLabeling.Sensors", "SmartLabeling.Sensors\SmartLabeling.Sensors.csproj", "{A8F2A5E3-C629-4FFD-9AF9-D02E708C9C0B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartLabeling.Camera", "SmartLabeling.Camera\SmartLabeling.Camera.csproj", "{3279D860-16FC-488E-8055-B21894F80D98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartLabeling.Core", "SmartLabeling.Core\SmartLabeling.Core.csproj", "{6D3C7BF5-397D-4E6D-B5C1-13D836AC6FBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartLabeling.Core", "SmartLabeling.Core\SmartLabeling.Core.csproj", "{6D3C7BF5-397D-4E6D-B5C1-13D836AC6FBC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

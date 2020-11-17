@@ -2,6 +2,8 @@
 {
     public class ApiSettings 
     {
+        public bool IsFaking { get; set; }
+     
         public string CameraUrl { get; set; }
 
         public string SensorsUrl { get; set; }
@@ -16,12 +18,28 @@
 
         public string FakeSensorsHub { get; set; }
 
+
+
+        public int InfraredDistance { get; set; }
+
+        public int ProximityTriggerPin { get; set; }
+
+        public int ProximityEchoPin { get; set; }
+
+        public int ProximityMaxDistance { get; set; }
+
+        public int ProximityDistance { get; set; }
+
+        public int ReadingDelay { get; set; }
+
+
+
+
         public int ImageWidth { get; set; }
 
         public int ImageHeight { get; set; }
 
         public int CaptureDelay { get; set; }
-        
-        public int ReadingDelay { get; set; }
+
     }
 }

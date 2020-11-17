@@ -6,7 +6,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SmartLabeling.Core.Hubs;
+using SmartLabeling.Core.Interfaces;
 using SmartLabeling.Core.Models;
+using SmartLabeling.Sensors.Services;
 
 namespace SmartLabeling.Sensors
 {
@@ -30,8 +32,9 @@ namespace SmartLabeling.Sensors
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SmartLabeling.Sensors", Version = "v1" });
             });
 
-            services.Configure<SensorsSettings>(Configuration.GetSection("SensorsSettings"));
-            services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<SensorsSettings>>().Value);
+            services.Configure<ApiSettings>(Configuration.GetSection("ApiSettings"));
+            services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<ApiSettings>>().Value);
+            services.AddSingleton<ISensorsService, SensorsService>();
 
             services.AddCors();
         }
@@ -44,6 +47,8 @@ namespace SmartLabeling.Sensors
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SmartLabeling.Sensors v1"));
             }
+
+            app.UseHttpsRedirection();
 
             app.UseCors(builder => builder.WithOrigins("http://localhost:5000").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 

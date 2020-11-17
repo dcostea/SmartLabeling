@@ -11,14 +11,10 @@ namespace SmartLabeling.Core.Hubs
     {
         private readonly ISensorsService _sensorsService;
         private static bool _isStreaming;
-        private static int _imageWidth;
-        private static int _imageHeight;
         private readonly ApiSettings _settings;
 
         public SensorsHub(ISensorsService sensorsService, ApiSettings settings)
         {
-            _imageWidth = settings.ImageWidth;
-            _imageHeight = settings.ImageHeight;
             _sensorsService = sensorsService;
             _settings = settings;
         }
@@ -68,8 +64,6 @@ namespace SmartLabeling.Core.Hubs
                     await writer.WriteAsync(reading);
 
                     //Console.WriteLine($"image size={capture.Image.Length} captured at {capture.CreatedAt}");
-
-                    await Task.Delay(_settings.CaptureDelay);
                 }
             }
         }

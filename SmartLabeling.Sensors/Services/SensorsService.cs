@@ -1,9 +1,6 @@
 ﻿using SmartLabeling.Core.Interfaces;
 using SmartLabeling.Core.Models;
 using SmartLabeling.Sensors.Helpers;
-using System;
-using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
 using Unosquare.RaspberryIO;
 using Unosquare.RaspberryIO.Gpio;
@@ -12,9 +9,9 @@ namespace SmartLabeling.Sensors.Services
 {
     public class SensorsService : ISensorsService
     {
-        readonly SensorsSettings _settings;
+        readonly ApiSettings _settings;
 
-        public SensorsService(SensorsSettings settings)
+        public SensorsService(ApiSettings settings)
         {
             _settings = settings;
         }

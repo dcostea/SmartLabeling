@@ -32,8 +32,8 @@ namespace SmartLabeling.Camera
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SmartLabeling.Camera", Version = "v1" });
             });
 
-            services.Configure<CameraSettings>(Configuration.GetSection("CameraSettings"));
-            services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<CameraSettings>>().Value);
+            services.Configure<ApiSettings>(Configuration.GetSection("ApiSettings"));
+            services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<ApiSettings>>().Value);
             services.AddSingleton<ICameraService, CameraService>();
 
             services.AddCors();
@@ -52,9 +52,9 @@ namespace SmartLabeling.Camera
 
             app.UseCors(builder => builder.WithOrigins("http://localhost:5000").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 
-            app.UseRouting();
-
             app.UseFileServer();
+
+            app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {

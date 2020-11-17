@@ -1,6 +1,5 @@
 ﻿using SmartLabeling.API.Helpers;
 using SmartLabeling.Core.Interfaces;
-using System;
 using System.IO;
 using System.Threading.Tasks;
 using CsvHelper;
@@ -26,26 +25,22 @@ namespace SmartLabeling.API.Services
             using var reader = new StreamReader(dataset);
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
             Readings = csv.GetRecords<Reading>().ToList();
-            //_random = new Random();
         }
 
         public Task<double> ReadInfrared()
         {
             return Task.Run(() => Readings[Index].Infrared);
-            //return Task.Run(() => Math.Round(_random.NextDouble() * 100, 2)); // between 0 and 100
         }
 
         public Task<double> ReadLuminosity()
         {
             Index = (Index + 1) % Readings.Count;
             return Task.Run(() => Readings[Index].Luminosity);
-            //return Task.Run(() => Math.Round(_random.NextDouble() * 100, 2)); // between 0 and 100
         }
 
         public Task<double> ReadTemperature()
         {
             return Task.Run(() => Readings[Index].Temperature);
-            //return Task.Run(() => Math.Round(_random.NextDouble() * 130 + 20, 2)); // between 20 and 150 celsius degrees
         }
     }
 }

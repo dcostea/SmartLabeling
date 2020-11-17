@@ -9,20 +9,20 @@ namespace SmartLabeling.Camera.Controllers
     public class CameraController : ControllerBase
     {
         private readonly ILogger<CameraController> _logger;
-        private readonly CameraSettings _cameraSettings;
+        private readonly ApiSettings _settings;
 
-        public CameraController(ILogger<CameraController> logger, CameraSettings cameraSettings)
+        public CameraController(ILogger<CameraController> logger, ApiSettings settings)
         {
             _logger = logger;
-            _cameraSettings = cameraSettings;
+            _settings = settings;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            _logger.LogInformation($"GET triggered with '{_cameraSettings.Entry}'.");
+            _logger.LogInformation($"GET triggered.");
 
-            return Ok(_cameraSettings.Entry);
+            return Ok();
         }
     }
 }
