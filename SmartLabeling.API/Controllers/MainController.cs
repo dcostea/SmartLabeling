@@ -1,12 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CsvHelper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SmartLabeling.API.Helpers;
 using SmartLabeling.Core.Models;
 using SmartLabeling.ML;
 using SmartLabeling.ML.DeepLearning;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,11 +28,13 @@ namespace SmartLabeling.API.Controllers
         static readonly string assetsRelativePath = @"../../../assets";
         static readonly string assetsPath = PathHelper.GetAbsolutePath(assetsRelativePath);
 
-        //TODO pull all settings to appsettings
         static readonly string tagsTsv = Path.Combine(assetsPath, "inputs", "train", "tags.tsv");
         static readonly string inceptionTrainImagesFolder = Path.Combine(assetsPath, "inputs", "train");
         static readonly string inceptionPb = Path.Combine(assetsPath, "inputs", "inception", "tensorflow_inception_graph.pb");
         static readonly string imageClassifierZip = Path.Combine(assetsPath, "outputs", "imageClassifier.zip");
+
+        static readonly string dataRelativePath = @"../../../data";
+        static readonly string dataPath = PathHelper.GetAbsolutePath(dataRelativePath);
 
         public MainController(ILogger<MainController> logger, ApiSettings apiSettings)
         {
@@ -50,6 +56,22 @@ namespace SmartLabeling.API.Controllers
             return Ok(_settings);
         }
 
+        [HttpPost("save_csv")]
+        public IActionResult SaveDatasetAsCsv(List<Reading> readings)
+        {
+            try
+            {
+                using var writer = new StreamWriter(Path.Combine(dataPath, $"dataset_{DateTime.UtcNow.Ticks}.csv"));
+                using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+                csv.WriteRecords(readings);
+            }
+            catch (Exception)
+            {
+                return BadRequest("saving failed");
+            }
+            return Ok("saved successfully");
+        }
+
         [HttpGet("train_inception")]
         public IActionResult ReTrainInception()
         {
@@ -64,9 +86,7 @@ namespace SmartLabeling.API.Controllers
         {
             using var reader = new StreamReader(Request.Body, Encoding.UTF8);
             string body = await reader.ReadToEndAsync();
-
             byte[] imageBytes = Convert.FromBase64String(body);
-
             string result = "?";
 
             try
