@@ -13,9 +13,9 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
     await getSettings().then((response) => response.json())
         .then(function (data) {
-            cameraUrl = data.isFaking ? data.fakeUrl : data.cameraUrl;
+            cameraUrl = data.isFakingIoT ? data.fakeUrl : data.cameraUrl;
             cameraHub = data.cameraHub;
-            sensorsUrl = data.isFaking ? data.fakeUrl : data.sensorsUrl;
+            sensorsUrl = data.isFakingIoT ? data.fakeUrl : data.sensorsUrl;
             sensorsHub = data.sensorsHub;
         })
         .catch(function (err) {

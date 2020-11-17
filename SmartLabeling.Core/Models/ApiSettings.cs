@@ -2,7 +2,7 @@
 {
     public class ApiSettings 
     {
-        public bool IsFaking { get; set; }
+        public bool IsFakingIoT { get; set; }
      
         public string CameraUrl { get; set; }
 
