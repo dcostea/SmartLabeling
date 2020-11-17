@@ -43,10 +43,10 @@
 function populateData(data) {
     if (data !== undefined) {
         if (data.luminosity !== undefined)
-            $("#lux").html(`${data.luminosity} %`);
+            document.querySelector("#lux").innerHTML = `${data.luminosity} %`;
         if (data.temperature !== undefined)
-            $("#temp").html(`${data.temperature} &deg;C`);
+            document.querySelector("#temp").innerHTML = `${data.temperature} &deg;C`;
         if (data.infrared !== undefined)
-            $("#infra").html(`${data.infrared} %`);
+            document.querySelector("#infra").innerHTML = `${data.infrared} %`;
     }
 }

@@ -1,5 +1,10 @@
 ﻿body {
-    padding-top: 30px;
-    padding-bottom: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
+.crop_image {
+    width: 256px;
+    height: 256px;
+    overflow: hidden;
+}

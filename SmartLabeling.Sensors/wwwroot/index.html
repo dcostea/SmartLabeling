@@ -21,10 +21,35 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-6 text-center">
+            <div class="col-3 text-center">
                 <input type="button" id="start" class="btn btn-primary btn-lg mt-3 mb-3" value="Start streaming" />
             </div>
-            <div class="col-8">
+            <div class="col-3">
+                <div class="card text-center crop_image">
+                    <img class="card-img-top rounded" src="images/lux.png" alt="Luminosity" title="Luminosity">
+                    <div class="card-img-overlay">
+                        <h2><span id="lux" class="card-text badge bg-warning">? %</span></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="card text-center crop_image">
+                    <img class="card-img-top rounded" src="images/temp.png" alt="Temperature" title="Temperature">
+                    <div class="card-img-overlay">
+                        <h2><span id="temp" class="card-text badge bg-warning">? &deg;C</span></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="card text-center crop_image">
+                    <img class="card-img-top rounded" src="images/infra.png" alt="Infrared" title="Infrared">
+                    <div class="card-img-overlay">
+                        <h2><span id="infra" class="card-text badge bg-warning">? %</span></h2>
+                    </div>
+                </div>
+            </div>
+
+            <!--<div class="col-8">
                 <div class="reading">
                     <img src="/images/lux.png" />
                     <p><span id="lux" class="badge badge-danger">? %</span></p>
@@ -37,7 +62,7 @@
                     <img src="/images/infra.png" />
                     <p><span id="infra" class="badge badge-danger">? %</span></p>
                 </div>
-            </div>
+            </div>-->
         </div>
     </div>
 </body>
