@@ -3,3 +3,8 @@
     padding-bottom: 10px;
 }
 
+.crop_image {
+    width: 256px;
+    height: 256px;
+    overflow: hidden;
+}

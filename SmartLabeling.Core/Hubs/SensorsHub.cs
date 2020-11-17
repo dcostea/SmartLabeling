@@ -21,15 +21,12 @@ namespace SmartLabeling.Core.Hubs
 
         public async Task StartSensorsStreaming()
         {
-            //TODO replace console with logger
-            Console.WriteLine("Sensors streaming started.");
             _isStreaming = true;
             await Clients.All.SendAsync("sensorsStreamingStarted", "started...");
         }
 
         public async Task StopSensorsStreaming()
         {
-            Console.WriteLine("Sensors streaming stopped.");
             _isStreaming = false;
             await Clients.All.SendAsync("sensorsStreamingStopped");
         }
@@ -44,26 +41,35 @@ namespace SmartLabeling.Core.Hubs
             {
                 while (_isStreaming)
                 {
-                    var luminosity = await _sensorsService.ReadLuminosity();
-                    await Task.Delay(_settings.ReadingDelay);
-
-                    var temperature = await _sensorsService.ReadTemperature();
-                    await Task.Delay(_settings.ReadingDelay);
-
-                    var infrared = await _sensorsService.ReadInfrared();
-                    await Task.Delay(_settings.ReadingDelay);
-
-                    var reading = new Reading
+                    try
                     {
-                        Luminosity = luminosity,
-                        Temperature = temperature,
-                        Infrared = infrared,
-                        CreatedAt = DateTime.Now.ToString("yyyyMMddhhmmssff")
-                    };
+                        var luminosity = await _sensorsService.ReadLuminosity();
+                        await Task.Delay(_settings.ReadingDelay);
 
-                    await writer.WriteAsync(reading);
+                        var temperature = await _sensorsService.ReadTemperature();
+                        await Task.Delay(_settings.ReadingDelay);
 
-                    //Console.WriteLine($"image size={capture.Image.Length} captured at {capture.CreatedAt}");
+                        var infrared = await _sensorsService.ReadInfrared();
+
+                        var createdAt = DateTime.Now.ToString("yyyyMMddhhmmssff");
+
+                        var reading = new Reading
+                        {
+                            Luminosity = luminosity,
+                            Temperature = temperature,
+                            Infrared = infrared,
+                            CreatedAt = createdAt
+                        };
+
+                        await writer.WriteAsync(reading);
+                        await Clients.All.SendAsync("sensorsDataCaptured", $"{luminosity}, {temperature}, {infrared}, {createdAt}");
+                    }
+                    catch (Exception)
+                    {
+                        await Clients.All.SendAsync("sensorsDataNotCaptured");
+                    }
+
+                    await Task.Delay(_settings.ReadingDelay);
                 }
             }
         }

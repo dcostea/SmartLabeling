@@ -5,17 +5,15 @@
     }
 
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/sensorshub")
         .configureLogging(signalR.LogLevel.Information)
+        .withUrl("/sensorshub")
         .build();
 
     connection.on("sensorsStreamingStarted", function () {
         console.log("SENSORS STREAMING STARTED");
-
         connection.stream("SensorsCaptureLoop").subscribe({
             close: false,
             next: data => {
-                console.log("populating sensors data...");
                 populateData(data);
             },
             err: err => {
@@ -27,13 +25,28 @@
         });
     });
 
+    connection.on("sensorsStreamingStopped", function () {
+        console.log("SENSORS STREAMING STOPPED");
+    });
+
+    connection.on("sensorsDataCaptured", function (data) {
+        console.log(`sensors data captured, ${data}`);
+    });
+
+    connection.on("sensorsDataNotCaptured", function () {
+        console.log(`sensors data not captured, IoT device error`);
+    });
+
     connection.start();
 })
 
 function populateData(data) {
     if (data !== undefined) {
-        if (data.image !== undefined) {
-            document.querySelector("#camera").setAttribute("src", `data:image/jpg;base64,${data.image}`);
-        }
+        if (data.luminosity !== undefined)
+            $("#lux").html(`${data.luminosity} %`);
+        if (data.temperature !== undefined)
+            $("#temp").html(`${data.temperature} &deg;C`);
+        if (data.infrared !== undefined)
+            $("#infra").html(`${data.infrared} %`);
     }
 }

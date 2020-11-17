@@ -5,17 +5,15 @@
     }
 
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/camerahub")
         .configureLogging(signalR.LogLevel.Information)
+        .withUrl("/camerahub")
         .build();
 
     connection.on("cameraStreamingStarted", function () {
         console.log("CAMERA STREAMING STARTED");
-
         connection.stream("CameraCaptureLoop").subscribe({
             close: false,
             next: data => {
-                console.log("populating camera data...");
                 populateData(data);
             },
             err: err => {
@@ -25,6 +23,18 @@
                 console.log("finished camera streaming");
             }
         });
+    });
+
+    connection.on("cameraStreamingStopped", function () {
+        console.log("CAMERA STREAMING STOPPED");
+    });
+
+    connection.on("cameraImageCaptured", function (data) {
+        console.log(`image captured, size: ${data}`);
+    });
+
+    connection.on("cameraImageNotCaptured", function () {
+        console.log(`image not captured, IoT device error`);
     });
 
     connection.start();

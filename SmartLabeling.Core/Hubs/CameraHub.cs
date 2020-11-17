@@ -25,15 +25,12 @@ namespace SmartLabeling.Core.Hubs
 
         public async Task StartCameraStreaming()
         {
-            //TODO replace console with logger
-            Console.WriteLine("Camera streaming started.");
             _isStreaming = true;
             await Clients.All.SendAsync("cameraStreamingStarted", "started...");
         }
 
         public async Task StopCameraStreaming()
         {
-            Console.WriteLine("Camera streaming stopped.");
             _isStreaming = false;
             await Clients.All.SendAsync("cameraStreamingStopped");
         }
@@ -48,17 +45,23 @@ namespace SmartLabeling.Core.Hubs
             {
                 while (_isStreaming)
                 {
-                    var image = await _cameraService.GetImage(_imageWidth, _imageHeight);
-
-                    var capture = new Capture
+                    byte[] image;
+                    try
                     {
-                        Image = image,
-                        CreatedAt = DateTime.Now.ToString("yyyyMMddhhmmssff")
-                    };
+                        image = await _cameraService.GetImage(_imageWidth, _imageHeight);
+                        var capture = new Capture
+                        {
+                            Image = image,
+                            CreatedAt = DateTime.Now.ToString("yyyyMMddhhmmssff")
+                        };
 
-                    await writer.WriteAsync(capture);
-
-                    //Console.WriteLine($"image size={capture.Image.Length} captured at {capture.CreatedAt}");
+                        await writer.WriteAsync(capture);
+                        await Clients.All.SendAsync("cameraImageCaptured", capture.Image.Length);
+                    }
+                    catch (Exception)
+                    {
+                        await Clients.All.SendAsync("cameraImageNotCaptured");
+                    }
 
                     await Task.Delay(_settings.CaptureDelay);
                 }

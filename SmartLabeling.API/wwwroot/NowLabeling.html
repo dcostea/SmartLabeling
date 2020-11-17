@@ -18,7 +18,7 @@
 
         <div class="row">
             <h1>Smart Labeling</h1>
-            <h2>Real-time Labeling</h2>
+            <h2>[real-time labeling]</h2>
             <ul class="nav">
                 <li class="nav-item">
                     <a class="nav-link" href="prelabeling.html">Pre labeling</a>
@@ -41,32 +41,32 @@
                 <input type="button" id="inception_train" class="btn btn-outline-secondary btn-sm mt-3 mb-3" value="Retrain Inception model" />
             </div>
             <div class="col-3">
-                <div class="card text-center">
-                    <img class="card-img-top rounded" src="images/lux.png" style="width: 256px; height: 256px;" alt="Luminosity" title="Luminosity">
+                <div class="card text-center crop_image">
+                    <img class="card-img-top rounded" src="images/lux.png" alt="Luminosity" title="Luminosity">
                     <div class="card-img-overlay">
                         <h2><span id="lux" class="card-text badge bg-warning">? %</span></h2>
                     </div>
                 </div>
             </div>
             <div class="col-3">
-                <div class="card text-center">
-                    <img class="card-img-top rounded" src="images/temp.png" style="width: 256px; height: 256px;" alt="Temperature" title="Temperature">
+                <div class="card text-center crop_image">
+                    <img class="card-img-top rounded" src="images/temp.png" alt="Temperature" title="Temperature">
                     <div class="card-img-overlay">
                         <h2><span id="temp" class="card-text badge bg-warning">? &deg;C</span></h2>
                     </div>
                 </div>
             </div>
             <div class="col-3">
-                <div class="card text-center">
-                    <img class="card-img-top rounded" src="images/infra.png" style="width: 256px; height: 256px;" alt="Infrared" title="Infrared">
+                <div class="card text-center crop_image">
+                    <img class="card-img-top rounded" src="images/infra.png" alt="Infrared" title="Infrared">
                     <div class="card-img-overlay">
                         <h2><span id="infra" class="card-text badge bg-warning">? %</span></h2>
                     </div>
                 </div>
             </div>
-            <div class="col-3 text-center">
+            <div class="col-3 text-center crop_image">
                 <div class="card text-center">
-                    <img class="card-img-top rounded" id="camera" src="images/undefined.png" style="width: 256px; height: 256px; overflow: hidden;" alt="">
+                    <img class="card-img-top rounded" id="camera" src="images/undefined.png" alt="">
                     <div class="card-img-overlay">
                         <h2><span id="prediction" class="card-text badge bg-danger"></span></h2>
                     </div>
