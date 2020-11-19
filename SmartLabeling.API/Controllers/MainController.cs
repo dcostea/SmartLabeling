@@ -1,10 +1,12 @@
 ﻿using CsvHelper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.ML;
 using SmartLabeling.API.Helpers;
 using SmartLabeling.Core.Models;
 using SmartLabeling.ML;
 using SmartLabeling.ML.DeepLearning;
+using SmartLabeling.ML.MachineLearning;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,6 +14,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -32,6 +35,7 @@ namespace SmartLabeling.API.Controllers
         static readonly string inceptionTrainImagesFolder = Path.Combine(assetsPath, "inputs", "train");
         static readonly string inceptionPb = Path.Combine(assetsPath, "inputs", "inception", "tensorflow_inception_graph.pb");
         static readonly string imageClassifierZip = Path.Combine(assetsPath, "outputs", "imageClassifier.zip");
+        static readonly string labeled_compare_data = "labeled_sensors_data.csv";
 
         static readonly string dataRelativePath = @"../../../data";
         static readonly string dataPath = PathHelper.GetAbsolutePath(dataRelativePath);
@@ -56,6 +60,51 @@ namespace SmartLabeling.API.Controllers
             return Ok(_settings);
         }
 
+
+        public class Some 
+        {
+            public string FileName { get; set; }
+            public int RowsCount { get; set; }
+        }
+
+
+        [HttpGet("datasets")]
+        public IActionResult GetDatasets()
+        {
+
+            var result = new List<Some>();
+
+            foreach (var file in Directory.GetFiles(Path.Combine(dataPath), "*.csv"))
+            {
+                result.Add(new Some
+                {
+                    FileName = Path.GetFileNameWithoutExtension(file),
+                    RowsCount = System.IO.File.ReadLines(file).Count()
+                }); ;
+            }
+
+            return Ok(result);
+        }
+
+        [HttpGet("train_ml")]
+        public IActionResult TrainMLAsync(int select = 0)
+        {
+            if (select == 0)
+            {
+                var metrics = MultiClassification.Train($"{dataPath}/*");
+
+                return Ok(metrics);
+            }
+            if (select == 1)
+            {
+                var metrics = MultiClassification.Train( Path.Combine(dataPath, labeled_compare_data));
+
+                return Ok(metrics);
+            }
+
+            return BadRequest($"Select parameter {select} is not valid.");
+        }
+
         [HttpPost("save_csv")]
         public IActionResult SaveDatasetAsCsv(List<Reading> readings)
         {
@@ -69,6 +118,7 @@ namespace SmartLabeling.API.Controllers
             {
                 return BadRequest("saving failed");
             }
+
             return Ok("saved successfully");
         }
 

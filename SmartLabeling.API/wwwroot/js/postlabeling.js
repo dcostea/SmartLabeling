@@ -5,20 +5,17 @@ var fakeSensorsHub;
 var capture = {};
 var sensors = {};
 
-//obsolete!!!!
-
 document.addEventListener('DOMContentLoaded', async (event) => {
-
-    //TODO intercept stop streaming and create a connection.on 
 
     // initialize
     document.querySelector("#stop").style.display = "none";
 
     await getSettings().then((response) => response.json())
         .then(function (data) {
-            fakeUrl = data.fakeUrl;
-            fakeCameraHub = data.fakeCameraHub;
-            fakeSensorsHub = data.fakeSensorsHub;
+            cameraUrl = data.fakeUrl;
+            cameraHub = data.cameraHub;
+            sensorsUrl = data.fakeUrl;
+            sensorsHub = data.sensorsHub;
         })
         .catch(function (err) {
             console.log(err.message);
@@ -27,11 +24,11 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     ////////////////////// CAMERA /////////////////////////////
     const cameraConnection = new signalR.HubConnectionBuilder()
         .configureLogging(signalR.LogLevel.Information)
-        .withUrl(fakeUrl + fakeCameraHub)
+        .withUrl(cameraUrl + cameraHub)
         .build();
 
     cameraConnection.on("cameraStreamingStarted", function () {
-        console.log("FAKE CAMERA STREAMING STARTED");
+        console.log("CAMERA STREAMING STARTED");
         cameraConnection.stream("CameraCaptureLoop").subscribe({
             close: false,
             next: data => {
@@ -41,13 +38,17 @@ document.addEventListener('DOMContentLoaded', async (event) => {
                 console.log(err);
             },
             complete: () => {
-                console.log("finished fake camera streaming");
+                console.log("finished camera streaming");
             }
         });
     });
 
     cameraConnection.on("cameraStreamingStopped", function () {
-        console.log("FAKE CAMERA STREAMING STOPPED");
+        console.log("CAMERA STREAMING STOPPED");
+    });
+
+    cameraConnection.on("cameraImageCaptured", function (data) {
+        console.log(`image captured, size: ${data}`);
     });
 
     cameraConnection.start();
@@ -55,11 +56,11 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     ////////////////////// SENSORS /////////////////////////////
     const sensorsConnection = new signalR.HubConnectionBuilder()
         .configureLogging(signalR.LogLevel.Information)
-        .withUrl(fakeUrl + fakeSensorsHub)
+        .withUrl(sensorsUrl + sensorsHub)
         .build();
 
     sensorsConnection.on("sensorsStreamingStarted", function () {
-        console.log("FAKE SENSORS STREAMING STARTED");
+        console.log("SENSORS STREAMING STARTED");
         sensorsConnection.stream("SensorsCaptureLoop").subscribe({
             close: false,
             next: data => {
@@ -69,13 +70,17 @@ document.addEventListener('DOMContentLoaded', async (event) => {
                 console.log(err);
             },
             complete: () => {
-                console.log("finished fake sensors streaming");
+                console.log("finished sensors streaming");
             }
         });
     });
 
     sensorsConnection.on("sensorsStreamingStopped", function () {
-        console.log("FAKE SENSORS STREAMING STOPPED");
+        console.log("SENSORS STREAMING STOPPED");
+    });
+
+    sensorsConnection.on("sensorsDataCaptured", function (data) {
+        console.log(`sensors data captured, ${data}`);
     });
 
     sensorsConnection.start();
@@ -242,8 +247,7 @@ function tableToJson(table) {
     return data;
 }
 
-function saveCsv()
-{
+function saveCsv() {
     let url = 'main/save_csv';
     var list = tableToJson(document.querySelector("#readings"))
 
@@ -258,7 +262,8 @@ function saveCsv()
     })
         .then((response) => response.json())
         .then(function (data) {
-            document.querySelector("#readings").innerHTML = "";
+            alert("Data saved to csv!");
+            clearList();
         })
         .catch(function (err) {
             console.log(err.message);

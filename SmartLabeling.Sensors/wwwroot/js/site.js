@@ -1,8 +1,6 @@
 ﻿document.addEventListener('DOMContentLoaded', (event) => {
 
-    document.querySelector("#start").onclick = function () {
-        connection.invoke("StartSensorsStreaming");
-    }
+    document.querySelector("#labeling_status").innerHTML = "[unlabeled]";
 
     const connection = new signalR.HubConnectionBuilder()
         .configureLogging(signalR.LogLevel.Information)
@@ -38,6 +36,32 @@
     });
 
     connection.start();
+
+    document.querySelector("#source_lighter").onclick = function () {
+        document.querySelector("#source").innerHTML = document.querySelector("#source_lighter").value;
+        document.querySelector("#labeling_status").innerHTML = "[labeled]";
+        connection.invoke("ChangeSource", document.querySelector("#source_lighter").value);
+    }
+    document.querySelector("#source_flashlight").onclick = function () {
+        document.querySelector("#source").innerHTML = document.querySelector("#source_flashlight").value;
+        document.querySelector("#labeling_status").innerHTML = "[labeled]";
+        connection.invoke("ChangeSource", document.querySelector("#source_flashlight").value);
+    }
+    document.querySelector("#source_infrared").onclick = function () {
+        document.querySelector("#source").innerHTML = document.querySelector("#source_infrared").value;
+        document.querySelector("#labeling_status").innerHTML = "[labeled]";
+        connection.invoke("ChangeSource", document.querySelector("#source_infrared").value);
+    }
+    document.querySelector("#source_daylight").onclick = function () {
+        document.querySelector("#source").innerHTML = document.querySelector("#source_daylight").value;
+        document.querySelector("#labeling_status").innerHTML = "[labeled]";
+        connection.invoke("ChangeSource", document.querySelector("#source_daylight").value);
+    }
+    document.querySelector("#source_cross").onclick = function () {
+        document.querySelector("#source").innerHTML = "";
+        document.querySelector("#labeling_status").innerHTML = "[unlabeled]";
+        connection.invoke("ChangeSource", " ");
+    }
 })
 
 function populateData(data) {

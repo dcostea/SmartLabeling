@@ -1,65 +1,32 @@
 ﻿var isInceptionTrained = false;
-var fakeUrl;
-var fakeCameraHub;
-var fakeSensorsHub;
-var capture = {};
+var sensorsUrl;
+var sensorsHub;
 var sensors = {};
-
-//obsolete!!!!
 
 document.addEventListener('DOMContentLoaded', async (event) => {
 
-    //TODO intercept stop streaming and create a connection.on 
-
     // initialize
     document.querySelector("#stop").style.display = "none";
+    document.querySelector("#live").style.display = "none";
 
     await getSettings().then((response) => response.json())
         .then(function (data) {
-            fakeUrl = data.fakeUrl;
-            fakeCameraHub = data.fakeCameraHub;
-            fakeSensorsHub = data.fakeSensorsHub;
+            sensorsUrl = data.isFakingIoT ? data.fakeUrl : data.sensorsUrl;
+            sensorsHub = data.sensorsHub;
         })
         .catch(function (err) {
             console.log(err.message);
         });
 
-    ////////////////////// CAMERA /////////////////////////////
-    const cameraConnection = new signalR.HubConnectionBuilder()
-        .configureLogging(signalR.LogLevel.Information)
-        .withUrl(fakeUrl + fakeCameraHub)
-        .build();
-
-    cameraConnection.on("cameraStreamingStarted", function () {
-        console.log("FAKE CAMERA STREAMING STARTED");
-        cameraConnection.stream("CameraCaptureLoop").subscribe({
-            close: false,
-            next: data => {
-                populateCameraData(data);
-            },
-            err: err => {
-                console.log(err);
-            },
-            complete: () => {
-                console.log("finished fake camera streaming");
-            }
-        });
-    });
-
-    cameraConnection.on("cameraStreamingStopped", function () {
-        console.log("FAKE CAMERA STREAMING STOPPED");
-    });
-
-    cameraConnection.start();
-
     ////////////////////// SENSORS /////////////////////////////
     const sensorsConnection = new signalR.HubConnectionBuilder()
         .configureLogging(signalR.LogLevel.Information)
-        .withUrl(fakeUrl + fakeSensorsHub)
+        .withUrl(sensorsUrl + sensorsHub)
         .build();
 
     sensorsConnection.on("sensorsStreamingStarted", function () {
-        console.log("FAKE SENSORS STREAMING STARTED");
+        console.log("SENSORS STREAMING STARTED");
+        document.querySelector("#live").style.display = "block";
         sensorsConnection.stream("SensorsCaptureLoop").subscribe({
             close: false,
             next: data => {
@@ -69,13 +36,18 @@ document.addEventListener('DOMContentLoaded', async (event) => {
                 console.log(err);
             },
             complete: () => {
-                console.log("finished fake sensors streaming");
+                console.log("finished sensors streaming");
             }
         });
     });
 
     sensorsConnection.on("sensorsStreamingStopped", function () {
-        console.log("FAKE SENSORS STREAMING STOPPED");
+        document.querySelector("#live").style.display = "none";
+        console.log("SENSORS STREAMING STOPPED");
+    });
+
+    sensorsConnection.on("sensorsDataCaptured", function (data) {
+        console.log(`sensors data captured, ${data}`);
     });
 
     sensorsConnection.start();
@@ -83,7 +55,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     ////// EVENTS ///////////////////////////////////////////////
 
     document.querySelector("#start").onclick = function () {
-        cameraConnection.invoke("StartCameraStreaming");
         sensorsConnection.invoke("StartSensorsStreaming");
 
         document.querySelector("#start").style.display = "none";
@@ -92,17 +63,11 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     }
 
     document.querySelector("#stop").onclick = function () {
-        cameraConnection.invoke("StopCameraStreaming");
         sensorsConnection.invoke("StopSensorsStreaming");
 
         document.querySelector("#start").style.display = "block";
         document.querySelector("#stop").style.display = "none";
         document.querySelector("#save_csv").disabled = false;
-    }
-
-    document.querySelector("#inception_train").onclick = function () {
-        startInceptionTraining();
-        document.querySelector("#inception_train").style.display = "none";
     }
 
     document.querySelector("#clear_list").onclick = function () {
@@ -113,16 +78,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         saveCsv();
     }
 })
-
-function populateCameraData(data) {
-    if (data !== undefined) {
-        if (data.image !== undefined) {
-            document.querySelector("#camera").setAttribute("src", `data:image/jpg;base64,${data.image}`);
-            capture.createdAt = data.createdAt;
-            getPredictionByImage(data.image);
-        }
-    }
-}
 
 function populateSensorsData(data) {
     if (data !== undefined) {
@@ -141,6 +96,11 @@ function populateSensorsData(data) {
         if (data.createdAt !== undefined) {
             sensors.createdAt = data.createdAt;
         }
+        if (data.source !== undefined) {
+            sensors.source = data.source;
+            document.querySelector("#source").innerHTML = `${data.source}`;
+        }
+        populateList(sensors);
     }
 }
 
@@ -156,66 +116,17 @@ async function getSettings() {
     return result;
 }
 
-function startInceptionTraining() {
-
-    var url = "main/train_inception";
-
-    fetch(url, {
-        method: 'GET',
-        mode: 'cors'
-    })
-        .then((response) => {
-            isInceptionTrained = true;
-        })
-        .catch(function (err) {
-            console.log(err.message);
-        });
-}
-
-function getPredictionByImage(image) {
-
-    let url = 'main/predict_image';
-
-    document.querySelector("#prediction").innerHTML = "?";
-
-    fetch(url, {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/octet-stream'
-        },
-        body: image
-    })
-        .then((response) => response.json())
-        .then(function (data) {
-            if (data !== undefined) {
-                console.log(data);
-                capture.source = data;
-                document.querySelector("#prediction").innerHTML = data;
-            }
-            populateList(sensors, capture);
-        })
-        .catch(function (err) {
-            console.log(err.message);
-        });
-}
-
-function populateList(sensors, capture) {
-
-    var tolerance = 200;
-    var difference = Math.abs(capture.createdAt - sensors.createdAt);
-    var isNear = difference < tolerance;
-    var backColor = isNear ? "bg-warning" : "bg-danger";
-    var checked = isNear ? "checked" : "";
+function populateList(sensors) {
 
     if (sensors.temperature !== undefined
         && sensors.luminosity !== undefined
         && sensors.infrared !== undefined
-        && capture.source !== undefined
-        && capture.createdAt !== undefined) {
+        && sensors.source !== undefined
+        && sensors.createdAt !== undefined) {
 
-        document.querySelector("#readings tbody").innerHTML = `<tr><td>${sensors.temperature}</td><td>${sensors.luminosity}</td><td>${sensors.infrared}</td><td title='${difference}' class='${backColor}'>${sensors.createdAt}</td><td title='${difference}' class='${backColor}'>${capture.createdAt}</td><td>${capture.source}</td><td><input type='checkbox' ${checked} /></td></tr>`
+        var checked = sensors.source == null || (sensors.source !== null && sensors.source.trim() == "") ? "" : "checked";
+
+        document.querySelector("#readings tbody").innerHTML = `<tr><td>${sensors.temperature}</td><td>${sensors.luminosity}</td><td>${sensors.infrared}</td><td>${sensors.createdAt}</td><td>${sensors.source}</td><td><input type='checkbox' ${checked} /></td></tr>`
             + document.querySelector("#readings tbody").innerHTML;
     }
 }
@@ -228,13 +139,13 @@ function tableToJson(table) {
     var data = [];
     for (var i = 1; i < table.rows.length; i++) {
         var tableRow = table.rows[i];
-        if (tableRow.cells[6].innerHTML.includes(" checked")) {
+        if (tableRow.cells[5].innerHTML.includes(" checked")) {
             var rowData = {
                 temperature: tableRow.cells[0].innerHTML,
                 luminosity: tableRow.cells[1].innerHTML,
                 infrared: tableRow.cells[2].innerHTML,
                 createdAt: tableRow.cells[3].innerHTML,
-                source: tableRow.cells[5].innerHTML,
+                source: tableRow.cells[4].innerHTML,
             };
             data.push(rowData);
         }
@@ -242,8 +153,7 @@ function tableToJson(table) {
     return data;
 }
 
-function saveCsv()
-{
+function saveCsv() {
     let url = 'main/save_csv';
     var list = tableToJson(document.querySelector("#readings"))
 
@@ -258,7 +168,8 @@ function saveCsv()
     })
         .then((response) => response.json())
         .then(function (data) {
-            document.querySelector("#readings").innerHTML = "";
+            alert("Data saved to csv!");
+            clearList();
         })
         .catch(function (err) {
             console.log(err.message);

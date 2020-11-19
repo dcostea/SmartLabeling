@@ -1,9 +1,5 @@
 ﻿document.addEventListener('DOMContentLoaded', (event) => {
 
-    document.querySelector("#start").onclick = function () {
-        connection.invoke("StartCameraStreaming");
-    }
-
     const connection = new signalR.HubConnectionBuilder()
         .configureLogging(signalR.LogLevel.Information)
         .withUrl("/camerahub")

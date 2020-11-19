@@ -12,6 +12,7 @@ namespace SmartLabeling.Core.Hubs
         private readonly ISensorsService _sensorsService;
         private static bool _isStreaming;
         private readonly ApiSettings _settings;
+        public static string Source { get; set; }
 
         public SensorsHub(ISensorsService sensorsService, ApiSettings settings)
         {
@@ -58,11 +59,12 @@ namespace SmartLabeling.Core.Hubs
                             Luminosity = luminosity,
                             Temperature = temperature,
                             Infrared = infrared,
-                            CreatedAt = createdAt
+                            CreatedAt = createdAt,
+                            Source = Source ?? string.Empty
                         };
 
                         await writer.WriteAsync(reading);
-                        await Clients.All.SendAsync("sensorsDataCaptured", $"{luminosity}, {temperature}, {infrared}, {createdAt}");
+                        await Clients.All.SendAsync("sensorsDataCaptured", $"{luminosity}, {temperature}, {infrared}, {createdAt}, {Source}");
                     }
                     catch (Exception)
                     {
@@ -72,6 +74,11 @@ namespace SmartLabeling.Core.Hubs
                     await Task.Delay(_settings.ReadingDelay);
                 }
             }
+        }
+
+        public void ChangeSource(string source)
+        {
+            Source = source.Trim();
         }
     }
 }

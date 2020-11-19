@@ -13,7 +13,7 @@ namespace SmartLabeling.API.Services
     public class FakeSensorsService : ISensorsService
     {
         //private readonly Random _random;
-        static readonly string assetsRelativePath = @"../../../data";
+        static readonly string assetsRelativePath = @"../../../comparedata";
         static readonly string assetsPath = PathHelper.GetAbsolutePath(assetsRelativePath);
         static readonly string dataset = Path.Combine(assetsPath, "unlabeled_sensors_data.csv");
         public static IList<Reading> Readings { get; set; }
