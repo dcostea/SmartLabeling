@@ -137,7 +137,7 @@ namespace SmartLabeling.API.Controllers
             using var reader = new StreamReader(Request.Body, Encoding.UTF8);
             string body = await reader.ReadToEndAsync();
             byte[] imageBytes = Convert.FromBase64String(body);
-            string result = "?";
+            string result = "";
 
             try
             {
